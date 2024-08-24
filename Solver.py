@@ -12,6 +12,31 @@ class Solver:
     def solve(self):
         pass
 
+    def check_solve(self):
+        duplicates = self.find_duplicates()
+        found_duplicates = self.check_duplicates(duplicates)
+        found_blank_cells = self.find_blank_cells()
+
+        if not found_duplicates and not found_blank_cells:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def check_duplicates(duplicates):
+        for element in ["boxes", "rows", "columns"]:
+            if len(duplicates[element]) > 0:
+                return True
+
+        return False
+
+    def find_blank_cells(self):
+        for row in self.board.get_board():
+            if "-" in row:
+                return True
+
+        return False
+
     def find_duplicates(self):
         duplicates = {
             "boxes": {},
@@ -20,9 +45,9 @@ class Solver:
         }
 
         for element_number in range(0,8+1):
-            box_duplicates = self.test_box(element_number)
-            row_duplicates = self.test_row(element_number)
-            column_duplicates = self.test_column(element_number)
+            box_duplicates = self.find_box_duplicates(element_number)
+            row_duplicates = self.find_row_duplicates(element_number)
+            column_duplicates = self.find_column_duplicates(element_number)
 
             if len(box_duplicates) > 0:
                 duplicates["boxes"][element_number] = box_duplicates
@@ -33,7 +58,7 @@ class Solver:
 
         return duplicates
 
-    def test_box(self, box_number):
+    def find_box_duplicates(self, box_number):
         """
         Boxes identified by number using the following pattern:
         0,1,2
@@ -47,10 +72,10 @@ class Solver:
         flattened_box = sum(box, [])
         return self.find_duplicates_in_list(flattened_box)
 
-    def test_row(self, row_number):
+    def find_row_duplicates(self, row_number):
         return self.find_duplicates_in_list(self.board.get_board_rows(row_number))
 
-    def test_column(self, column_number):
+    def find_column_duplicates(self, column_number):
         vertical_line = []
 
         for line in self.board.get_board():

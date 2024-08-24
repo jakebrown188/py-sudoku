@@ -27,9 +27,20 @@ def test_for_duplicates_in_board():
     solver.print_duplicates(duplicates)
 
 
+def test_for_solved_board():
+    board = Board("puzzles/puzzle1-beginner.txt")
+    solver = Solver(board)
+    is_solved = solver.check_solve()
+    if is_solved:
+        print("Board is solved!")
+    else:
+        print("Board is not solved")
+
+
 def main():
     # test_adding_and_removing_from_board(board)
-    test_for_duplicates_in_board()
+    # test_for_duplicates_in_board()
+    test_for_solved_board()
 
 
 if __name__ == '__main__':
