@@ -27,7 +27,6 @@ class Board:
         row[column_number] = "-"
 
     def get_board_rows(self, start, finish=None):
-        rows = None
         if finish is None:
             rows = self.board[start]
         else:
@@ -58,7 +57,8 @@ class Board:
                 print("+-------+-------+-------+")
             line_count += 1
 
-    def print_box(self, box):
+    @staticmethod
+    def print_box(box):
         print("+-------+")
         for line in box:
             print("| ", end="")
