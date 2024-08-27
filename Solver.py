@@ -9,6 +9,9 @@ class Solver:
         # Character used in the 2D board array to represent a blank cell
         self.blank_character = "-"
 
+        # Create scratch space for possible guesses
+        self.scratch_space = {}
+
     def solve(self):
         pass
 
@@ -102,6 +105,33 @@ class Solver:
                 duplicates.add(element)
 
         return duplicates
+
+    def store_guess_in_scratch_space(self, row, column, guess):
+        if row > 8 or column > 8 or guess > 9:
+            print("The following are invalid options: row > 8, column > 8, guess > 9")
+            exit(1)
+
+        self.initialize_scratch_space(row, column)
+        self.scratch_space[row][column].add(guess)
+
+    def initialize_scratch_space(self, row, column):
+        if row not in self.scratch_space.keys():
+            self.scratch_space[row] = {}
+
+        if column not in self.scratch_space[row]:
+            self.scratch_space[row][column] = set()
+
+    def get_guess_options_from_scratch_space(self, row, column):
+        return self.scratch_space[row][column]
+
+    def check_candidates(self, row, column):
+        # Loop through every cell of the board
+        
+
+        # Find what box the cell is in
+
+        # Check box, row, and column for options
+        pass
 
     def print_duplicates(self, duplicates):
         for element in ["Boxes", "Rows", "Columns"]:

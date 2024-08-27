@@ -37,10 +37,21 @@ def test_for_solved_board():
         print("Board is not solved")
 
 
+def test_scratch_space():
+    board = Board("puzzles/puzzle1-beginner.txt")
+    solver = Solver(board)
+    solver.store_guess_in_scratch_space(0, 6, 3)
+    solver.store_guess_in_scratch_space(0, 6, 3)
+    solver.store_guess_in_scratch_space(0, 6, 4)
+    options = solver.get_guess_options_from_scratch_space(0, 6)
+    print(options)
+
+
 def main():
     # test_adding_and_removing_from_board(board)
     # test_for_duplicates_in_board()
-    test_for_solved_board()
+    # test_for_solved_board()
+    test_scratch_space()
 
 
 if __name__ == '__main__':
