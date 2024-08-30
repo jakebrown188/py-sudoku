@@ -1,3 +1,6 @@
+import math
+
+
 class Board:
     def __init__(self, input_file_path):
         self.input_file_path = input_file_path
@@ -33,6 +36,46 @@ class Board:
             rows = self.board[start:finish]
 
         return rows
+
+    def get_board_column(self, column_index):
+        column_data = []
+
+        for row in self.board:
+            column_data.append(row[column_index])
+
+        return column_data
+
+    def extract_box_from_box_number(self, box_number):
+        """
+        Boxes identified by number using the following pattern:
+        0,1,2
+        3,4,5
+        6,7,8
+        :param box_number: number used to identify what box to check
+        :return: True if box contains no errors, false otherwise
+        """
+        starting_row = math.floor(box_number / 3) * 3
+        starting_column = box_number % 3 * 3
+
+        return self.get_box_array(starting_row, starting_column)
+
+    def extract_box_from_cell_coordinates(self, row_index, column_index):
+        if column_index % 3 != 0:
+            column_index = column_index - (column_index % 3)
+
+        if row_index % 3 != 0:
+            row_index = row_index - (row_index % 3
+                                     )
+        return self.get_box_array(row_index, column_index)
+
+    def get_box_array(self, starting_row, starting_column):
+        box = []
+
+        relevant_rows = self.get_board_rows(starting_row, starting_row + 3)
+        for row in relevant_rows:
+            box.append(row[starting_column:starting_column + 3])
+
+        return box
 
     def get_board(self):
         return self.board
