@@ -77,6 +77,10 @@ class Board:
 
         return box
 
+    @staticmethod
+    def flatten_box(box):
+        return sum(box, [])
+
     def get_board(self):
         return self.board
 
