@@ -34,6 +34,7 @@ class Solver:
         self.board_object.print_board()
         print()
         print("SOLVED")
+        print(f"Took {count} rounds")
 
 
     def check_solve(self):
