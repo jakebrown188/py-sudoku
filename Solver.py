@@ -1,19 +1,35 @@
-import math
+import copy
 from tabulate import tabulate
 
 
 class Solver:
     def __init__(self, board):
-        self.board = board
+        self.board_object = board
+        self.board_array = self.board_object.get_board()
 
         # Character used in the 2D board array to represent a blank cell
         self.blank_character = "-"
+        self.valid_sudoku_options = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
         # Create scratch space for possible guesses
         self.scratch_space = {}
 
     def solve(self):
-        pass
+        is_solved = self.check_solve()
+        count = 0
+
+        while not is_solved:
+            if count > 10000:
+                print("Could not find solution")
+                exit(1)
+
+            self.generate_candidates()
+            self.implement_candidates()
+
+            is_solved = self.check_solve()
+
+            count += 1
+
 
     def check_solve(self):
         duplicates = self.find_duplicates()
@@ -34,7 +50,7 @@ class Solver:
         return False
 
     def find_blank_cells(self):
-        for row in self.board.get_board():
+        for row in self.board_array:
             if "-" in row:
                 return True
 
@@ -62,40 +78,22 @@ class Solver:
         return duplicates
 
     def find_box_duplicates(self, box_number):
-        """
-        Boxes identified by number using the following pattern:
-        0,1,2
-        3,4,5
-        6,7,8
-        :param box_number: number used to identify what box to check
-        :return: True if box contains no errors, false otherwise
-        """
-        box = self.extract_box(box_number)
+        box = self.board_object.extract_box_from_box_number(box_number)
 
-        flattened_box = sum(box, [])
+        flattened_box = self.board_object.flatten_box(box)
         return self.find_duplicates_in_list(flattened_box)
 
     def find_row_duplicates(self, row_number):
-        return self.find_duplicates_in_list(self.board.get_board_rows(row_number))
+        return self.find_duplicates_in_list(self.board_object.get_board_rows(row_number))
 
     def find_column_duplicates(self, column_number):
         vertical_line = []
 
-        for line in self.board.get_board():
+        for line in self.board_array:
             vertical_line.append(line[column_number])
 
         return self.find_duplicates_in_list(vertical_line)
 
-    def extract_box(self, box_number):
-        starting_row = math.floor(box_number / 3) * 3
-        starting_column = box_number % 3 * 3
-
-        box = []
-        relevant_rows = self.board.get_board_rows(starting_row, starting_row + 3)
-        for row in relevant_rows:
-            box.append(row[starting_column:starting_column + 3])
-
-        return box
 
     def find_duplicates_in_list(self, input_list):
         duplicates = set()
@@ -107,12 +105,24 @@ class Solver:
         return duplicates
 
     def store_guess_in_scratch_space(self, row, column, guess):
+        if not isinstance(row, int):
+            row = int(row)
+        if not isinstance(column, int):
+            column = int(column)
+        if not isinstance(guess, int):
+            guess = int(guess)
+
         if row > 8 or column > 8 or guess > 9:
             print("The following are invalid options: row > 8, column > 8, guess > 9")
             exit(1)
 
+
         self.initialize_scratch_space(row, column)
         self.scratch_space[row][column].add(guess)
+
+    def store_guesses_in_scratch_space(self, row_index, column_index, guesses):
+        for guess in guesses:
+            self.store_guess_in_scratch_space(row_index, column_index, guess)
 
     def initialize_scratch_space(self, row, column):
         if row not in self.scratch_space.keys():
@@ -121,17 +131,59 @@ class Solver:
         if column not in self.scratch_space[row]:
             self.scratch_space[row][column] = set()
 
+    def remove_guess_from_scratch_space(self, row_index, column_index, candidate):
+        candidates = self.scratch_space[row_index][column_index]
+
+        if len(candidates) == 1:
+            self.scratch_space[row_index].pop(column_index)
+        if len(candidates) > 1:
+            self.scratch_space[row_index][column_index].remove(candidate)
+
     def get_guess_options_from_scratch_space(self, row, column):
         return self.scratch_space[row][column]
 
-    def check_candidates(self, row, column):
-        # Loop through every cell of the board
-        
+    def implement_candidates(self):
+        scratch_space_copy = copy.deepcopy(self.scratch_space)
+        for row_index in scratch_space_copy.keys():
+            for column_index in scratch_space_copy[row_index]:
+                candidates = scratch_space_copy[row_index][column_index]
+                if len(candidates) == 1:
+                    candidate = list(candidates)[0]
+                    self.board_object.insert_number_into_board(row_index, column_index, candidate)
+                    self.remove_guess_from_scratch_space(row_index, column_index, candidate)
 
-        # Find what box the cell is in
+    def generate_candidates(self):
+        board = self.board_array
+        for row_index in range(len(board)):
+            for column_index in range(len(board[row_index])):
+                cell_value = board[row_index][column_index]
 
-        # Check box, row, and column for options
-        pass
+                if cell_value == self.blank_character:
+                    guesses = self.generate_candidate(row_index, column_index)
+                    self.store_guesses_in_scratch_space(row_index, column_index, guesses)
+
+    def generate_candidate(self, row_index, column_index):
+        # get row options
+        row = self.board_array[row_index]
+        row_guesses = self.find_sudoku_diff(row)
+        row_guesses.sort()
+
+        # get column options
+        column = self.board_object.get_board_column(column_index)
+        column_guesses = self.find_sudoku_diff(column)
+        column_guesses.sort()
+
+        # get box guesses
+        box = self.board_object.extract_box_from_cell_coordinates(row_index, column_index)
+        box = self.board_object.flatten_box(box)
+        box_guesses = self.find_sudoku_diff(box)
+        box_guesses.sort()
+
+        return list(set(row_guesses) & set(column_guesses) & set(box_guesses))
+
+
+    def find_sudoku_diff(self, input_list):
+        return list(set(self.valid_sudoku_options) - set(input_list))
 
     def print_duplicates(self, duplicates):
         for element in ["Boxes", "Rows", "Columns"]:
