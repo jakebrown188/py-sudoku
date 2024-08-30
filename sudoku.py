@@ -50,7 +50,7 @@ def test_scratch_space():
 def test_sudoku_diff():
     board = Board("puzzles/puzzle1-beginner.txt")
     solver = Solver(board)
-    solver.populate_guesses()
+    solver.generate_candidates()
 
     input_list = ["3","-","7","-","-","-","9","6","-"]
     options = solver.find_sudoku_diff(input_list)
@@ -73,9 +73,10 @@ def test_get_board_row_and_column():
 
 
 def test_generate_guesses():
-    board = Board("puzzles/puzzle1-beginner.txt")
+    board = Board("puzzles/puzzle2-check_candidates.txt")
     solver = Solver(board)
-    solver.populate_guesses()
+    solver.generate_candidates()
+    print()
 
 
 def test_get_box_number():
@@ -110,6 +111,27 @@ def test_get_box_from_coordinates():
             board.print_box(box)
             print()
 
+
+def test_implement_candidates():
+    board = Board("puzzles/puzzle1-beginner.txt")
+    solver = Solver(board)
+
+    board.print_board()
+
+    solver.generate_candidates()
+    solver.implement_candidates()
+
+    board.print_board()
+
+
+def test_remove_candidate():
+    board = Board("puzzles/puzzle1-beginner.txt")
+    solver = Solver(board)
+    solver.generate_candidates()
+
+    solver.remove_guess_from_scratch_space(0, 1, 5)
+    solver.remove_guess_from_scratch_space(2, 0, 5)
+
 def main():
     # test_adding_and_removing_from_board(board)
     # test_for_duplicates_in_board()
@@ -120,8 +142,11 @@ def main():
     # test_generate_guesses()
     # test_get_box_number()
     # test_get_box_from_number()
+    # test_get_box_from_coordinates()
 
-    test_get_box_from_coordinates()
+    test_implement_candidates()
+
+    # test_remove_candidate()
 
     # board = Board("puzzles/puzzle1-beginner.txt")
     # solver = Solver(board)
