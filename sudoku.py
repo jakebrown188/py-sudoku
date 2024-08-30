@@ -47,11 +47,85 @@ def test_scratch_space():
     print(options)
 
 
+def test_sudoku_diff():
+    board = Board("puzzles/puzzle1-beginner.txt")
+    solver = Solver(board)
+    solver.populate_guesses()
+
+    input_list = ["3","-","7","-","-","-","9","6","-"]
+    options = solver.find_sudoku_diff(input_list)
+    print(options)
+
+
+def test_get_board_row_and_column():
+    board = Board("puzzles/puzzle1-beginner.txt")
+
+    board.print_board()
+
+    row_index = 0
+    column_index = 0
+
+    row = board.get_board_rows(row_index)
+    column = board.get_board_column(column_index)
+
+    print(f"Row: {row}")
+    print(f"Column: {column}")
+
+
+def test_generate_guesses():
+    board = Board("puzzles/puzzle1-beginner.txt")
+    solver = Solver(board)
+    solver.populate_guesses()
+
+
+def test_get_box_number():
+    board = Board("puzzles/puzzle1-beginner.txt")
+
+    for row_index in range(0,8+1):
+        for column_index in range(0,8+1):
+            print(f"Starting -> Row: {row_index}, Column: {column_index}")
+            board.extract_box_from_cell_coordinates(row_index, column_index)
+            print()
+
+
+def test_get_box_from_number():
+    board = Board("puzzles/puzzle1-beginner.txt")
+
+    board.print_board()
+
+    for box_number in range(0, 8+1):
+        box = board.extract_box_from_box_number(box_number)
+        board.print_box(box)
+
+
+def test_get_box_from_coordinates():
+    board = Board("puzzles/puzzle1-beginner.txt")
+
+    board.print_board()
+
+    for row_index in range(0,8+1):
+        for column_index in range(0,8+1):
+            box = board.extract_box_from_cell_coordinates(row_index, column_index)
+            print(f"Row: {row_index}, Column: {column_index}")
+            board.print_box(box)
+            print()
+
 def main():
     # test_adding_and_removing_from_board(board)
     # test_for_duplicates_in_board()
     # test_for_solved_board()
-    test_scratch_space()
+    # test_scratch_space()
+    # test_sudoku_diff()
+    # test_get_board_row_and_column()
+    # test_generate_guesses()
+    # test_get_box_number()
+    # test_get_box_from_number()
+
+    test_get_box_from_coordinates()
+
+    # board = Board("puzzles/puzzle1-beginner.txt")
+    # solver = Solver(board)
+    # solver.populate_guesses()
 
 
 if __name__ == '__main__':
