@@ -25,10 +25,15 @@ class Solver:
 
             self.generate_candidates()
             self.implement_candidates()
+            self.reset_scratch_space()
 
             is_solved = self.check_solve()
 
             count += 1
+
+        self.board_object.print_board()
+        print()
+        print("SOLVED")
 
 
     def check_solve(self):
@@ -138,6 +143,9 @@ class Solver:
             self.scratch_space[row_index].pop(column_index)
         if len(candidates) > 1:
             self.scratch_space[row_index][column_index].remove(candidate)
+
+    def reset_scratch_space(self):
+        self.scratch_space = {}
 
     def get_guess_options_from_scratch_space(self, row, column):
         return self.scratch_space[row][column]

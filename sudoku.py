@@ -132,6 +132,14 @@ def test_remove_candidate():
     solver.remove_guess_from_scratch_space(0, 1, 5)
     solver.remove_guess_from_scratch_space(2, 0, 5)
 
+
+def test_check_solve():
+    board = Board("puzzles/puzzle1-beginner.txt")
+    solver = Solver(board)
+
+    solver.solve()
+
+
 def main():
     # test_adding_and_removing_from_board(board)
     # test_for_duplicates_in_board()
@@ -143,10 +151,10 @@ def main():
     # test_get_box_number()
     # test_get_box_from_number()
     # test_get_box_from_coordinates()
-
-    test_implement_candidates()
-
+    # test_implement_candidates()
     # test_remove_candidate()
+
+    test_check_solve()
 
     # board = Board("puzzles/puzzle1-beginner.txt")
     # solver = Solver(board)
