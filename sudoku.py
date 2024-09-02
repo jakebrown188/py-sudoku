@@ -66,7 +66,7 @@ def test_get_board_row_and_column():
     column_index = 0
 
     row = board.get_board_rows(row_index)
-    column = board.get_board_column(column_index)
+    column = board.get_board_columns(column_index)
 
     print(f"Row: {row}")
     print(f"Column: {column}")
@@ -140,6 +140,20 @@ def test_check_solve():
     solver.solve()
 
 
+def test_get_board_column():
+    board = Board("puzzles/puzzle1-beginner.txt")
+
+    column = board.get_board_columns(0)
+    columns = board.get_board_columns(0, 3)
+
+    board.print_board()
+
+    print()
+    print(f"Column: {column}")
+    print()
+    print(f"Columns: {columns}")
+
+
 def main():
     # test_adding_and_removing_from_board(board)
     # test_for_duplicates_in_board()
@@ -153,8 +167,9 @@ def main():
     # test_get_box_from_coordinates()
     # test_implement_candidates()
     # test_remove_candidate()
-
     test_check_solve()
+
+    # test_get_board_column()
 
     # board = Board("puzzles/puzzle1-beginner.txt")
     # solver = Solver(board)
