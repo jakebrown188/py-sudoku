@@ -1,9 +1,11 @@
 import copy
 from tabulate import tabulate
 
+from Board import Board
+
 
 class Solver:
-    def __init__(self, board):
+    def __init__(self, board: Board) -> None:
         self.board_object = board
         self.board_array = self.board_object.get_board()
 
@@ -157,7 +159,7 @@ class Solver:
             for column_index in scratch_space_copy[row_index]:
                 candidates = scratch_space_copy[row_index][column_index]
                 if len(candidates) == 1:
-                    candidate = list(candidates)[0]
+                    candidate = str(list(candidates)[0])
                     self.board_object.insert_number_into_board(row_index, column_index, candidate)
                     self.remove_guess_from_scratch_space(row_index, column_index, candidate)
 
@@ -178,7 +180,7 @@ class Solver:
         row_guesses.sort()
 
         # get column options
-        column = self.board_object.get_board_column(column_index)
+        column = self.board_object.get_board_columns(column_index)
         column_guesses = self.find_sudoku_diff(column)
         column_guesses.sort()
 
