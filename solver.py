@@ -1,7 +1,7 @@
 import copy
 from tabulate import tabulate
 
-from Board import Board
+from board import Board
 
 
 class Solver:
